@@ -1,18 +1,16 @@
-TabZolo
+NoDoubleURL
 ======
 
-Chrome extension that fights multi-tab ADD by limiting you to TabZolo.
+Chrome extension that aim to make sure each URL is open only once.
+
+WIP: do not use yet
 
 ## Usage
 
-TabZolo is very simple to use. Simply, [install the extension](http://bit.ly/1aytexM) and
-click on the `tz` icon that is placed on your browser. All your inactive windows/tabs will be hidden and new ones will be
-blocked from being activated.
+
 
 ### Why?
 
-Because having 190374... tabs and windows open is bad for your brain. I mean how many of those are you looking at? Probably
-only one.
 
 ## License
 
