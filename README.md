@@ -1,24 +1,17 @@
-NoDoubleURL
+TabRecycle
 ======
 
 Chrome extension that aim to make sure each URL is open only once.
 
-WIP: do not use yet
 
 ## Usage
 
 
-
-### Why?
-
-
 ## License
-
-**Here's some boring legal stuff**
 
 ### MIT
 
-> Copyright (c) 2013 David Small, Leo Correa
+> Copyright (c) 2023 Cedric Ferry
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
