@@ -1,28 +1,25 @@
 {
-	"manifest_version": 2,
-	"name":"TabZolo",
-	"description": "The focus and actually get stuff done online extension.",
-	"version": "1.0.3.1",
+	"manifest_version": 3,
+	"name": "TabRecycle",
+	"description": "aim to make sure each URL is open only once",
+	"version": "0.1",
 	"permissions": [
 		"tabs",
 		"storage"
 	],
 	"background": {
-		"persistent": false,
-		"scripts": ["assets/javascript/TabZolo.js"]
+		"service_worker": "assets/javascript/TabRecycle.js"
 	},
-	"browser_action": {
-		"default_icon":  {
-			"19": "assets/images/tabzolo-inactive-19.png",
-			"38": "assets/images/tabzolo-inactive-38.png"
+	"action": {
+		"default_icon": {
+			"19": "assets/images/tab-recycle-disabled-19.png",
+			"38": "assets/images/tab-recycle-disabled-38.png"
 		},
-		"default_title": "TabZolo"
+		"default_title": "TabRecycle"
 	},
-	"homepage_url": "http://tabzolo.co",
-	"icons":{
-		"16": "assets/images/tabzolo-16.png",
-		"48": "assets/images/tabzolo-48.png",
-		"128": "assets/images/tabzolo-128.png",
-		"148": "assets/images/tabzolo-148.png"
+	"homepage_url": "https://github.com/sonique6784/TabRecycle",
+	"icons": {
+		"128": "assets/images/tab-recycle-128.png",
+		"148": "assets/images/tab-recycle-148.png"
 	}
 }
