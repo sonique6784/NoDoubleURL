@@ -17,6 +17,10 @@
 		},
 		"default_title": "TabRecycle"
 	},
+	"options_ui": {
+		"page": "assets/options.html",
+		"open_in_tab": false
+	},
 	"homepage_url": "https://github.com/sonique6784/TabRecycle",
 	"icons": {
 		"128": "assets/images/tab-recycle-128.png",

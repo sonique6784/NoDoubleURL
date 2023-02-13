@@ -10,11 +10,35 @@ chrome.runtime.onStartup.addListener(function () {
   });
 });
 
+/*
+
+ - open new tab, paste url 
+  * current tab is: active
+  * new tab is active
+  > url is the same -> close the new tab
+
+
+- command-click, same URL with #
+  * current tab is: active
+  * new tab is: inactive
+  > close _other_ that are inactive
+  > 
+
+
+- command-click, different base Url
+  * current tab is: active
+  * new tab is: inactive
+  > close _other_ that are inactive
+
+
+*/
+
 let tabListener = function (tabId, changeInfo, tab) {
   // read changeInfo data and do something with it (like read the url)
   if (changeInfo.url) {
     let newURL = changeInfo.url;
     let newTabId = tabId;
+    let isNewTabActive = tab.active;
 
     const newUrlExtracted = extractHash(newURL);
 
@@ -23,8 +47,10 @@ let tabListener = function (tabId, changeInfo, tab) {
       { active: true, windowId: tab.windowId },
       function (activetabs) {
         let activeUrl = "";
+        let activeID = -1;
         if (activetabs.length > 0) {
           activeUrl = activetabs[0].url;
+          activeID = activetabs[0].id;
           console.log("activeUrl: " + activeUrl);
         }
 
@@ -39,26 +65,39 @@ let tabListener = function (tabId, changeInfo, tab) {
 
             const tabUrlExtracted = extractHash(tabi.url);
 
-            // if the URL is the same
-            // and if active is true, we are coming from this tab
-            // it means the users open it on purpose -> skip
-            if (
-              newTabId != tabi.id &&
+            let closeTab =
+              // if the processing tabi has the same URL as targeted
               tabUrlExtracted.baseURL === newUrlExtracted.baseURL &&
-              tabUrlExtracted.baseURL != activeUrlExtracted.baseURL &&
-              tabi.active == false
-            ) {
+              // base URL is not the current active tab
+              (activeUrlExtracted.baseURL != newUrlExtracted.baseURL ||
+                // or active url and new url are the same because we are modifing current tab
+                (activeUrlExtracted.baseURL === newUrlExtracted.baseURL &&
+                  isNewTabActive)) &&
+              // and the processing tab is not the new tab
+              newTabId != tabi.id;
+
+            if (closeTab) {
               // Switch to tab
               // https://developer.chrome.com/docs/extensions/reference/tabs/
-              chrome.tabs.remove(newTabId, () => {
-                console.log("tab removed");
+
+              let tabToRemoveId = newTabId; // newly open
+
+              chrome.tabs.remove(tabToRemoveId, () => {
+                console.log("tab removed: " + tabToRemoveId);
+
+                chrome.storage.local.get({ removed: 0 }, function (results) {
+                  console.dir(results);
+                  let updateRemove = results.removed + 1;
+                  chrome.storage.local.set({ removed: updateRemove });
+
+                  chrome.action.setBadgeText({
+                    text: "" + updateRemove,
+                  });
+                });
 
                 if (newUrlExtracted.hash != tabUrlExtracted.hash) {
-                  // since there is no #, add an empty one to load faster
                   let finalUrl = newURL;
-                  if (newUrlExtracted.hash == "") {
-                    finalUrl += "#";
-                  }
+
                   //console.log("update: " + tabi.id + " with final URL" + finalUrl);
                   chrome.tabs.update(tabi.id, {
                     selected: true,
@@ -95,14 +134,23 @@ function extractHash(url) {
 
 function updateExtensionStatus() {
   console.log("init");
-  chrome.storage.local.get("enabled", function (results) {
-    let enabled = results.enabled || results.enabled == undefined;
+  chrome.storage.local.get({ enabled: true, removed: 0 }, function (results) {
+    let enabled = results.enabled;
     console.log("init enabled: " + enabled);
+
+    chrome.action.setBadgeText({
+      text: "" + results.removed,
+    });
+
     setIcon(enabled);
     if (enabled) {
       chrome.tabs.onUpdated.addListener(tabListener);
     } else {
       chrome.tabs.onUpdated.removeListener(tabListener);
+    }
+
+    if (results.removed == undefined) {
+      chrome.storage.local.set({ removed: 0 });
     }
   });
 }
